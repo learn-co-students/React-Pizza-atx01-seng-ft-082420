@@ -10,12 +10,14 @@ class App extends Component {
 
     this.state = {
       pizzas: [],
-      selected: {
+      pizza: {
         id: 0,
         topping: '',
         size: '',
         vegetarian: false
-      }
+      },
+      search: '',
+      filter: ''
     }
   }
 
@@ -26,52 +28,84 @@ class App extends Component {
   }
 
   selectPizza = (pizza) => {
-    this.setState({
-      selected: {
-        id: pizza.id,
-        topping: pizza.topping,
-        size: pizza.size,
-        vegetarian: pizza.vegetarian
-      }
-    })
+    this.setState({pizza})
   }
 
-  editPizza = (pizza) => {
-    console.log(pizza)
-    fetch(`${URL}/${pizza.id}` , {
+  setSearch = (input) => {
+    let search = input.toLowerCase()
+    this.setState({search})
+  }
+
+  setFilter = (filter) => {
+    this.setState({filter})
+  }
+
+  handleChange = (i) => {
+    if (i.name === "topping") {
+      this.setState({
+        pizza: {...this.state.pizza, topping: i.value}
+    })} else if (i.name === "size") {
+      this.setState({
+        pizza: {...this.state.pizza, size: i.value}
+    })} else if (i.name === "vegetarian") {
+        let val = (i.value === 'true' ? true : false)
+      this.setState({
+        pizza: {...this.state.pizza, vegetarian: val}
+    })}
+    console.log(this.state.pizza)
+  }
+
+  handleSubmit = (e, id) => {
+    e.preventDefault()
+    if (this.state.pizza.id === 0) {
+      this.createPizza()
+    } else {
+      this.updatePizza(id)
+    }
+  }
+
+  updatePizza = (id) => {
+    fetch(`${URL}/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type':'application/json',
         'Accepts':'application/json'
       },
-      body: JSON.stringify(pizza)
+      body: JSON.stringify(this.state.pizza)
     })
     .then(res => res.json())
-    .then(newPizza => this.setState({pizzas: this.state.pizzas.map(p => p.id === newPizza.id ? newPizza : p)}))
+    .then(pizza => this.setState({pizzas: this.state.pizzas.map(p => p.id === pizza.id ? pizza : p)}))
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault()
-    this.editPizza(this.state.selected)
+  createPizza = () => {
+    fetch(URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json',
+        'Accepts':'application/json'
+      },
+      body: JSON.stringify(this.state.pizza)
+    })
+    .then(res => res.json())
+    .then(pizza => this.setState({pizzas: [...this.state.pizzas, pizza]}))
   }
-
-  handleChange = (e) => {
-    if (e.target.name === 'topping') {
-        this.setState({selected: {...this.state.selected, topping: e.target.value}})
-    } else if (e.target.name === 'size') {
-        this.setState({selected: {...this.state.selected, size: e.target.value}})
-    } else if (e.target.name === 'vegetarian') {
-        let val = (e.target.value === 'true' ? true : false)
-        this.setState({selected: {...this.state.selected, vegetarian: val}})
-    }
+  
+  deletePizza = (pizza) => {
+    fetch(`${URL}/${pizza.id}`, {
+      method: 'DELETE'
+    })
+    .then(this.setState({pizzas: this.state.pizzas.filter(p => p.id !== pizza.id)}))
   }
 
   render() {
+    const noms = this.state.pizzas.filter(p => p.topping.toLowerCase().includes(this.state.search))
+    const pizzas = noms.filter(p => p.size.includes(this.state.filter))
     return (
       <Fragment>
         <Header/>
-        <PizzaForm pizza={this.state.selected} handleSubmit={this.handleSubmit} handleChange={this.handleChange}/>
-        <PizzaList pizzas={this.state.pizzas} selectPizza={this.selectPizza}/>
+        <PizzaForm pizza={this.state.pizza} handleSubmit={this.handleSubmit} handleChange={this.handleChange} setSearch={this.setSearch}
+        setFilter={this.setFilter}/>
+        <PizzaList pizzas={pizzas} selectPizza={this.selectPizza} deletePizza={this.deletePizza}/>
       </Fragment>
     );
   }

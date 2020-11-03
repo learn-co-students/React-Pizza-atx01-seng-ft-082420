@@ -2,9 +2,9 @@
   "pizzas": [
     {
       "id": 1,
-      "topping": "Peppa",
-      "size": "Large",
-      "vegetarian": false
+      "topping": "Vegan Peppasssss",
+      "size": "Medium",
+      "vegetarian": true
     },
     {
       "id": 2,
@@ -14,27 +14,21 @@
     },
     {
       "id": 3,
-      "topping": "Mushroom",
+      "topping": "Mushroom 2.0",
       "size": "Small",
       "vegetarian": true
     },
     {
       "id": 4,
-      "topping": "Sausage",
-      "size": "Small",
-      "vegetarian": false
+      "topping": "Sausage MCGRIDDLE (Vegan)",
+      "size": "Large",
+      "vegetarian": true
     },
     {
       "id": 5,
       "topping": "Bacon",
       "size": "Medium",
       "vegetarian": false
-    },
-    {
-      "id": 6,
-      "topping": "Spinach",
-      "size": "Medium",
-      "vegetarian": true
     },
     {
       "id": 7,
@@ -56,8 +50,14 @@
     },
     {
       "id": 10,
-      "topping": "Chicken",
-      "size": "Large",
+      "topping": "Peppa Pig",
+      "size": "Medium",
+      "vegetarian": false
+    },
+    {
+      "id": 11,
+      "topping": "Sponge zaa",
+      "size": "Medium",
       "vegetarian": true
     }
   ]
